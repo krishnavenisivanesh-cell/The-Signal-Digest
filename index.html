@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Better Tomorrow — The Signal Digest</title>
+<style>
+
+  :root{
+    --paper: #F7F4EC;
+    --paper-alt: #EFEAE0;
+    --ink: #1C2541;
+    --ink-soft: #4A5169;
+    --bubble: #E9E5D8;
+    --bubble-border: #DAD4C2;
+    --highlight: #F5B942;
+    --highlight-soft: #FCE7BA;
+    --urgent: #D3572A;
+    --moss: #5E7C5C;
+    --rule: #D8D2C0;
+    --serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+    --sans: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+    --mono: "IBM Plex Mono", "Courier New", monospace;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection{ background: var(--highlight-soft); }
+
+  a{ color: var(--urgent); }
+
+  .wrap{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* ---------- HERO ---------- */
+
+  header.hero{
+    padding: 88px 0 56px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .kicker{
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+  }
+
+  h1{
+    font-family: var(--serif);
+    font-size: clamp(2.3rem, 5vw, 3.4rem);
+    line-height: 1.08;
+    margin: 0 0 20px;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-sub{
+    font-size: 1.08rem;
+    color: var(--ink-soft);
+    max-width: 56ch;
+    margin: 0 0 44px;
+  }
+
+  /* simulated chat clutter — the hero visual */
+  .chat-demo{
+    background: var(--paper-alt);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 22px 22px 24px;
+    position: relative;
+  }
+
+  .chat-demo .demo-label{
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .bubble{
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    background: var(--bubble);
+    border: 1px solid var(--bubble-border);
+    border-radius: 3px;
+    padding: 9px 12px;
+    margin-bottom: 8px;
+    color: var(--ink-soft);
+    opacity: 0.55;
+    max-width: 92%;
+  }
+
+  .bubble.flagged{
+    background: var(--highlight-soft);
+    border-color: var(--highlight);
+    color: var(--ink);
+    opacity: 1;
+    position: relative;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+  }
+
+  .bubble.flagged::before{
+    content: "flagged";
+    position: absolute;
+    top: -9px;
+    left: 10px;
+    background: var(--highlight);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 0.62rem;
+    padding: 1px 7px;
+    border-radius: 2px;
+    letter-spacing: 0.03em;
+  }
+
+  .arrow-down{
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 1.3rem;
+    margin: 6px 0;
+  }
+
+  .digest-out{
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    border-radius: 3px;
+    padding: 12px 14px;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    margin-top: 4px;
+  }
+
+  .digest-out .tag{
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 0.68rem;
+    color: var(--urgent);
+    margin-right: 6px;
+  }
+
+  /* ---------- SECTIONS ---------- */
+
+  section{
+    padding: 56px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  section:last-of-type{ border-bottom: none; }
+
+  .eyebrow{
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 0.98rem;
+    margin: 0 0 8px;
+  }
+
+  h2{
+    font-family: var(--serif);
+    font-size: 1.9rem;
+    margin: 0 0 22px;
+    line-height: 1.2;
+  }
+
+  p{
+    max-width: 66ch;
+    font-size: 1.02rem;
+    color: var(--ink);
+  }
+
+  p.lede{
+    font-size: 1.12rem;
+    color: var(--ink-soft);
+  }
+
+  /* pull quote / problem statement box */
+  .statement{
+    font-family: var(--serif);
+    font-size: 1.28rem;
+    line-height: 1.5;
+    border-left: 3px solid var(--urgent);
+    padding: 4px 0 4px 24px;
+    margin: 28px 0;
+    max-width: 56ch;
+  }
+
+  .statement .role{ color: var(--urgent); font-style: italic; }
+
+  /* ideate cards */
+  .options{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 28px;
+  }
+
+  .option{
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 18px 20px;
+    background: var(--paper-alt);
+  }
+
+  .option.chosen{
+    border: 1.5px solid var(--moss);
+    background: #EEF2EA;
+  }
+
+  .option h3{
+    font-family: var(--serif);
+    font-size: 1.08rem;
+    margin: 0 0 6px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .option .verdict{
+    font-family: var(--sans);
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--moss);
+  }
+
+  .option p{ margin: 0; font-size: 0.95rem; color: var(--ink-soft); }
+
+  /* flow diagram */
+  .flow{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 32px 0;
+    flex-wrap: wrap;
+  }
+
+  .flow-step{
+    flex: 1;
+    min-width: 130px;
+    text-align: center;
+    padding: 16px 10px;
+    background: var(--paper-alt);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    font-size: 0.88rem;
+  }
+
+  .flow-step .n{
+    display: block;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 0.78rem;
+    margin-bottom: 4px;
+  }
+
+  .flow-sep{ color: var(--ink-soft); font-size: 1.1rem; }
+
+  /* solution paragraph block */
+  .solution-text p{
+    max-width: 68ch;
+    margin-bottom: 18px;
+  }
+
+  /* validation checklist */
+  .checklist{
+    list-style: none;
+    padding: 0;
+    margin: 24px 0 0;
+    max-width: 60ch;
+  }
+
+  .checklist li{
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-top: 1px solid var(--rule);
+    font-size: 0.98rem;
+    color: var(--ink-soft);
+  }
+
+  .checklist li:last-child{ border-bottom: 1px solid var(--rule); }
+
+  .checklist .box{
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--ink-soft);
+    border-radius: 2px;
+    margin-top: 3px;
+  }
+
+  .checklist strong{ color: var(--ink); font-weight: 600; }
+
+  footer{
+    padding: 40px 0 70px;
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+    font-style: italic;
+    font-family: var(--serif);
+  }
+
+  @media (prefers-reduced-motion: no-preference){
+    .bubble, .digest-out, .option{
+      transition: transform 0.2s ease;
+    }
+  }
+
+  @media (max-width: 600px){
+    header.hero{ padding: 56px 0 40px; }
+    section{ padding: 40px 0; }
+  }
+
+</style>
+</head>
+<body>
+
+  <div class="wrap">
+
+    <header class="hero">
+      <p class="kicker">Project Better Tomorrow</p>
+      <h1>The future is built one daily friction at a time.</h1>
+      <p class="hero-sub">A design-thinking intervention into a small, unglamorous problem: important messages disappearing into the scroll of a crowded group chat.</p>
+
+      <div class="chat-demo">
+        <div class="demo-label"><span>CS204 — Group Chat</span><span>142 unread</span></div>
+        <div class="bubble">lmaooo bro fr 💀💀</div>
+        <div class="bubble">anyone free at 6 for badminton</div>
+        <div class="bubble flagged">Reminder: Assignment 3 submission moved to Fri 5 PM, not Mon.</div>
+        <div class="bubble">who has the notes from today's class</div>
+        <div class="bubble">bruh the canteen wifi is down again</div>
+        <div class="arrow-down">↓ filtered</div>
+        <div class="digest-out"><span class="tag">TODAY</span>CS204 — submission deadline moved to Fri 5 PM.</div>
+      </div>
+    </header>
+
+    <section id="friction">
+      <p class="eyebrow">Empathize</p>
+      <h2>The friction nobody names</h2>
+      <p class="lede">Second-year students don't struggle because they lack information — they struggle because the one message that matters arrives wearing the same plain text as two hundred that don't.</p>
+      <p>In high-traffic academic group chats, an urgent deadline change sits visually identical to a meme, a lunch plan, or a stray "lol." Nothing in the interface tells a student which lines deserve their attention. The result isn't ignorance — it's a quiet, recurring tax of missed submissions, last-minute scrambling, and the low-grade stress of never being sure you've actually seen everything you needed to.</p>
+    </section>
+
+    <section id="problem">
+      <p class="eyebrow">Define</p>
+      <h2>The problem, stated precisely</h2>
+      <div class="statement">
+        <span class="role">Second-year students</span> need a reliable way to separate time-sensitive academic announcements from routine group chatter, because important deadlines get buried in high-volume chat groups — leading to missed submissions, last-minute scrambling, and avoidable stress.
+      </div>
+      <p>This statement deliberately names a user, a need, and an insight — and stops short of naming a solution. It's the line every option below was tested against.</p>
+    </section>
+
+    <section id="ideate">
+      <p class="eyebrow">Ideate with AI</p>
+      <h2>Three directions, stress-tested</h2>
+      <div class="options">
+        <div class="option">
+          <h3>Official-only broadcast channel <span class="verdict">Rejected</span></h3>
+          <p>Clean in theory, but depends on faculty and class reps adopting an entirely new habit. Adoption risk is high, and the friction just moves from the student to the announcer.</p>
+        </div>
+        <div class="option">
+          <h3>Manual shared deadline board <span class="verdict">Rejected</span></h3>
+          <p>Low-tech and easy to picture, but it adds manual upkeep — someone has to remember to update it, which recreates the exact discipline problem it's meant to solve.</p>
+        </div>
+        <div class="option chosen">
+          <h3>AI-filtered announcement digest <span class="verdict">Chosen</span></h3>
+          <p>Requires no group-wide behavior change. It watches the existing chat, judges which messages are genuinely urgent, and quietly hands the student a short digest — removing friction instead of relocating it.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="solution">
+      <p class="eyebrow">The Intervention</p>
+      <h2>The Signal Digest</h2>
+
+      <div class="flow">
+        <div class="flow-step"><span class="n">the group chat</span>Messages arrive as normal — nothing changes for the group.</div>
+        <div class="flow-sep">→</div>
+        <div class="flow-step"><span class="n">the filter</span>Keywords, dates and sender roles are scanned for academic urgency.</div>
+        <div class="flow-sep">→</div>
+        <div class="flow-step"><span class="n">the judgment call</span>An AI layer weighs tone and intent, not just matching words.</div>
+        <div class="flow-sep">→</div>
+        <div class="flow-step"><span class="n">the digest</span>A short, private summary reaches the student, once or twice a day.</div>
+      </div>
+
+      <div class="solution-text">
+        <p>The proposed solution is an AI-assisted digest system that quietly filters the noise of high-traffic group chats and surfaces only what genuinely matters to a student's academic life. Rather than asking students to change their habits, join a new platform, or manually scroll through hundreds of unread messages every day, the solution works in the background, observing the flow of conversation the way a diligent classmate might, and distilling it down to a short, digestible summary delivered once or twice a day. The core idea is simple: most of the anxiety and missed deadlines students experience are not caused by a lack of information, but by an excess of it, delivered in a format that treats a professor's exam reschedule with the same visual weight as a meme or a lunch plan. By reintroducing hierarchy into an otherwise flat, chronological chat feed, the digest bot restores the sense of clarity that a physical noticeboard or a structured email newsletter once provided, but without asking anyone to abandon the convenience of the chat app they already trust and check daily.</p>
+
+        <p>Functionally, the system works by monitoring the text of a group chat, either through a forwarded export in the low-fidelity prototype phase or through a lightweight bot integration in a more developed version, and scanning incoming messages for markers associated with academic urgency. These markers include explicit keywords such as "deadline," "submission," "exam," "postponed," and "reschedule," but also more nuanced cues like dates paired with time expressions, mentions of specific course codes, or messages sent by class representatives or faculty. Where a simple keyword filter might miss a poorly phrased but urgent message, or wrongly flag a casual joke that happens to contain the word "exam," the AI layer adds a layer of contextual judgment, assessing whether a message is genuinely announcement-like in intent and structure rather than relying on rigid pattern matching alone. This is where AI acts as a divergence partner rather than a rulebook: it makes a soft judgment call, the way a person skimming a chat would instinctively know which message to save for later.</p>
+
+        <p>Once relevant messages are identified, the system compiles them into a short digest, ideally no more than five to ten lines, organized by urgency and course, and delivered to the student separately from the group chat. The original messages remain untouched; the solution creates a parallel, quieter lane for what matters most rather than moderating the group itself. This choice is deliberate — any solution that disrupts the existing social dynamics of a chat, by removing messages or forcing new etiquette, is far less likely to be adopted, no matter how technically elegant it is. The prototype therefore prioritizes low friction of adoption over technical sophistication, staying close to the human-centered spirit of the process it grew out of.</p>
+
+        <p>For validation, the low-fidelity version needs no code at all. It can be tested through a "Wizard of Oz" method: manually reviewing a real group chat's history for several days, hand-selecting the messages the described logic would have flagged, and delivering that digest to real users exactly as an automated system would. This validates whether students actually find the digest useful, accurate, and trustworthy before any engineering effort is spent. Feedback from these early testers — messages wrongly excluded for lacking obvious keywords, or announcements flagged too late to matter — becomes the exact material that shapes a sharper second iteration, treating the solution not as a finished product but as a hypothesis, continuously refined against the friction people actually live with.</p>
+      </div>
+    </section>
+
+    <section id="validate">
+      <p class="eyebrow">Prototype &amp; Validation</p>
+      <h2>What testing this looks like</h2>
+      <p>The prototype is a manually-produced digest, not a working bot — proving the concept before investing in the build.</p>
+      <ul class="checklist">
+        <li><span class="box"></span><span><strong>Select a live group chat</strong> — one the tester is already a member of, with real traffic.</span></li>
+        <li><span class="box"></span><span><strong>Hand-curate a digest</strong> for 3–5 real days, using the same keyword + judgment logic described above.</span></li>
+        <li><span class="box"></span><span><strong>Deliver it privately</strong> to at least three testers, exactly as an automated version would.</span></li>
+        <li><span class="box"></span><span><strong>Ask two questions</strong>: did this save you from missing anything? Was anything wrongly flagged or missed?</span></li>
+        <li><span class="box"></span><span><strong>Log every miss</strong> — both false flags and true misses — as raw material for the next iteration.</span></li>
+      </ul>
+    </section>
+
+    <footer>
+      "The future is not something we wait for — it is something we build, one daily friction at a time."
+    </footer>
+
+  </div>
+
+</body>
+</html>
